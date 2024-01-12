@@ -1,0 +1,21 @@
+{
+  "extends": ["@commitlint/config-angular"],
+  "rules": {
+    "subject-empty": [2, "never"],
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "demo",
+        "docs",
+        "rx-effects"
+      ]
+    ],
+    "type-empty": [2, "never"],
+    "type-enum": [
+      2,
+      "always",
+      ["fix", "feat", "docs", "refactor", "test", "chore", "ci", "perf", "build", "revert"]
+    ]
+  }
+}
