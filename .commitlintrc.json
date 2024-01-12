@@ -8,7 +8,9 @@
       [
         "demo",
         "docs",
-        "rx-effects"
+        "rx-effects",
+        "effects",
+        "chore"
       ]
     ],
     "type-empty": [2, "never"],
