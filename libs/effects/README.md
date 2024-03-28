@@ -2,6 +2,13 @@
 
 Tooling to handle your effects (subscriptions)!
 
+## Installation
+  
+  ```bash
+  npm install @angular-kit/effects
+  ```
+
+
 ## Included
 
 - `rxEffects`
