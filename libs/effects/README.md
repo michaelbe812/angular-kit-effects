@@ -21,6 +21,11 @@ execute side effects.
 You can run a single effect
 ```ts
 const intervalEffect = rxEffect().run(interval(1000), console.log)
+
+// or
+const effects = rxEffect();
+
+logEffect = this.effects.run(...)
 ```
 
 Or create a group of effects:
@@ -32,12 +37,12 @@ const effects = rxEffect(({register}) => {
 
 })
 
-// or
-const effects = rxEffect();
-
-logEffect = this.effects.run(...)
-
 ```
-
 *Note* that you need to use `rxEffect` within an injection context. If you want to
 use it outside an injection context you can pass the `Ìnjector` as argument.
+
+#### Run Code when an effect is cleaned up
+
+Todo add docs
+
+
