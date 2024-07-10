@@ -18,20 +18,12 @@ Tooling to handle your effects (subscriptions)!
 `rxEffect` is a standalone convenience function to take care of a subscription and
 execute side effects.
 
+You can run a single effect
 ```ts
-const intervalEffect = rxEffect(interval(1000), (v) => console.log(v))
+const intervalEffect = rxEffect().run(interval(1000), console.log)
 ```
 
-*Note* that you need to use `rxEffect` within an injection context. If you want to
-use it outside an injection context you can pass the `Ìnjector` as argument.
-
-### `rxEffect`
-
-`rxEffect` is a convenience function which acts as a container to take care of
-multiple subscriptions and execute sideffects.
-
-*Note* that you need to use `rxEffect` within an injection context. If you want to
-use it outside an injection context you can pass the `Ìnjector` as argument.
+Or create a group of effects:
 
 ```ts
 const effects = rxEffect(({register}) => {
@@ -39,4 +31,13 @@ const effects = rxEffect(({register}) => {
   // register more effects
 
 })
+
+// or
+const effects = rxEffect();
+
+logEffect = this.effects.run(...)
+
 ```
+
+*Note* that you need to use `rxEffect` within an injection context. If you want to
+use it outside an injection context you can pass the `Ìnjector` as argument.
