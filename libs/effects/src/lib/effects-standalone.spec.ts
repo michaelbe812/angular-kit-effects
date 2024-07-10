@@ -47,7 +47,7 @@ describe(`${rxEffect.name} standalone`, () => {
     it('should execute functions registered in runOnInstanceCleanUp ', async () => {
       const { effects, fixture } = await setupSingleEffectsInstance();
       const spy = jest.fn();
-      effects.runOnInstanceCleanUp(() => spy());
+      effects.runOnInstanceDestroy(() => spy());
 
       fixture.destroy();
       expect(spy).toHaveBeenCalledTimes(1);
