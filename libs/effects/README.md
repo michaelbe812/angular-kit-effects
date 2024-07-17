@@ -27,9 +27,9 @@ logEffect = this.effects.run(...)
 Or create a group of effects:
 
 ```ts
-const effects = rxEffect(({register}) => {
-  register(interval(1000), v => console.log(v))
-  // register more effects
+const effects = rxEffect(({run}) => {
+  run(interval(1000), v => console.log(v))
+  // run more effects
 
 })
 
