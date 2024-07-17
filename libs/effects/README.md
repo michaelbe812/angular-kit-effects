@@ -96,3 +96,7 @@ When creating an effect:
 ```
 You get a `EffectCleanUpRef` which exposes a `cleanUp`-function. You can call this function and 
 destroy this single effect.
+
+## Demo
+
+See this [stackblitz](https://stackblitz.com/edit/stackblitz-starters-baeufy?file=src%2Fapp%2Fchild%2Fchild.component.ts)
