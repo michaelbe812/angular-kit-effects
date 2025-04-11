@@ -1,3 +1,1 @@
-export {
-  rxEffect,
-} from './lib/effects'
+export { rxEffect } from './lib/effects.functional';
