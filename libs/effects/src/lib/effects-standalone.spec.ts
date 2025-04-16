@@ -1,13 +1,9 @@
-import { Effects, rxEffect } from './effects';
+import { rxEffect } from './effects.functional';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { interval, of, Subject, tap } from 'rxjs';
 
 describe(`${rxEffect.name} standalone`, () => {
-  it('should create instance of Effects', async () => {
-    const { effects } = await setupSingleEffectsInstance();
-    expect(effects).toBeInstanceOf(Effects);
-  });
   describe('run', () => {
     it('should accept subscription and execute side effect', async () => {
       const { effects } = await setupSingleEffectsInstance();

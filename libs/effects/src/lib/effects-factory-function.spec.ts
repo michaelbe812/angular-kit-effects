@@ -1,4 +1,4 @@
-import { rxEffect } from './effects';
+import { rxEffect } from './effects.functional';
 import { TestBed } from '@angular/core/testing';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { of, Subject } from 'rxjs';
