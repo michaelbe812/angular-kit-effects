@@ -35,11 +35,18 @@ export function isRunOptionsGuard(obj: any): obj is RunOptions {
 }
 
 type EffectsSetupFn = (rxEffect: {
-  run: <T>(
+  run(sub: Subscription, options?: RunOptions): EffectCleanUpRef;
+  run<T>(o$: Observable<T>, options?: RunOptions): EffectCleanUpRef;
+  run<T>(
+    o$: Observable<T>,
+    sideEffectFn: (arg: T) => void,
+    options?: RunOptions
+  ): EffectCleanUpRef;
+  run<T>(
     obsOrSub$: Observable<T> | Subscription,
     sideEffectFn?: ((arg: T) => void) | RunOptions,
     options?: RunOptions
-  ) => EffectCleanUpRef;
+  ): EffectCleanUpRef;
   runOnInstanceDestroy: (sideEffectFn: () => void) => EffectCleanUpRef;
 }) => void;
 
@@ -54,7 +61,7 @@ type EffectsSetupFn = (rxEffect: {
  *
  * @example
  *
- * const ef = effects(({run, runOnInstanceDestroy}) => {
+ * const ef = rxEffects(({run, runOnInstanceDestroy}) => {
  *     run(source$, console.log)
  *
  *     run(source$.subscribe(console.log))
@@ -84,7 +91,10 @@ export function rxEffect(
     const idSubMap = new Map<number, Subscription>();
     const destroyHook$$ = new ReplaySubject<void>(1);
 
-    // Inner function for unregistering an effect
+    /**
+     * Cancel a registered side effect
+     * @param effectId
+     */
     function unregister(effectId: number): void {
       const subscription = idSubMap.get(effectId);
       if (subscription) {
@@ -92,7 +102,66 @@ export function rxEffect(
       }
     }
 
-    // Implementation of run method
+    /**
+     * @description
+     * Manage the subscription of an observable and execute the side effect.
+     *
+     * Unsubscribes automatically when the provided {@link DestroyRef} is destroyed.
+     *
+     * Manually unsubscribe by calling {@link EffectCleanUpRef.cleanUp}.
+     *
+     * @example
+     * ```typescript
+     * ef = effects(({run})=> run(source$.subscribe(console.log)))
+     * ```
+     * @param sub
+     * @param options
+     */
+    function run(sub: Subscription, options?: RunOptions): EffectCleanUpRef;
+    /**
+     * @description
+     * Subscribe to the passed observable and execute the side effect.
+     *
+     * Unsubscribes automatically when the provided {@link DestroyRef} is destroyed.
+     *
+     * Manually unsubscribe by calling {@link EffectCleanUpRef.cleanUp}.
+     *
+     * @example
+     * ```typescript
+     * ef = effects(({run})=> run(source$.pipe(tap(console.log))))
+     * ```
+     *
+     * @param o$
+     * @param options
+     */
+    function run<T>(o$: Observable<T>, options?: RunOptions): EffectCleanUpRef;
+    /**
+     * @description
+     * Subscribe to the passed observable and execute the side effect.
+     *
+     * Unsubscribes automatically when the provided {@link DestroyRef} is destroyed.
+     *
+     * Manually unsubscribe by calling {@link EffectCleanUpRef.cleanUp}.
+     *
+     * @example
+     * ```typescript
+     * const trigger$ = of(1);
+     * const effect = console.log;
+     * ef = effects(({run})=> run(trigger$, effect))
+     * ```
+     *
+     * @param o$
+     * @param sideEffectFn
+     * @param options
+     */
+    function run<T>(
+      o$: Observable<T>,
+      sideEffectFn: (arg: T) => void,
+      options?: RunOptions
+    ): EffectCleanUpRef;
+    /**
+     * @internal
+     */
     function run<T>(
       obsOrSub$: Observable<T> | Subscription,
       sideEffectFn?: ((arg: T) => void) | RunOptions,
@@ -164,7 +233,10 @@ export function rxEffect(
       };
     }
 
-    // Implementation of runOnInstanceDestroy
+    /**
+     * Execute a sideEffect when the rxEffect instance OnDestroy hook is executed
+     * @param sideEffectFn
+     */
     function runOnInstanceDestroy(sideEffectFn: () => void) {
       return run(destroyHook$$.pipe(tap(sideEffectFn)).subscribe());
     }
