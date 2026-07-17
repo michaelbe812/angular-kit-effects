@@ -2,6 +2,22 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+# [1.4.0](https://github.com/michaelbe812/angular-kit-effects/compare/rx-effects-1.3.0...rx-effects-1.4.0) (2026-07-17)
+
+
+### Bug Fixes
+
+* effects setup fn ([3c4f3f4](https://github.com/michaelbe812/angular-kit-effects/commit/3c4f3f43cee1f7ef38c63bbae30501d046e81f48))
+* **effects:** log source errors instead of crashing host ([1afa859](https://github.com/michaelbe812/angular-kit-effects/commit/1afa85924a353c9530a816860127ac2fa27f3c93))
+* **effects:** rethrow source errors when no ErrorHandler available ([d83e1f5](https://github.com/michaelbe812/angular-kit-effects/commit/d83e1f504ef004e7edfe50ec4a9bc3f685cc034a))
+
+
+### Features
+
+* **effects:** rework rxEffect lifecycle, exports, packaging ([87b6683](https://github.com/michaelbe812/angular-kit-effects/commit/87b66831093fd783f242c12781205d1f8f9e078c))
+
+
+
 ## 1.3.0 (2024-07-10)
 
 * refactor(effects): rename runOnCleanUp to runOnInstanceDestroy ([8258f4f](https://github.com/michaelbe812/angular-kit-effects/commit/8258f4f))
