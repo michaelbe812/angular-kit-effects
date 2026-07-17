@@ -1,2 +1,6 @@
-<angular-kit-effects-nx-welcome></angular-kit-effects-nx-welcome>
+<h1>Welcome {{ title }}</h1>
+
+<p data-testid="counter">Counter: {{ counter }}</p>
+<button data-testid="stop-counter" (click)="stopCounter()">Stop counter</button>
+
 <router-outlet></router-outlet>
