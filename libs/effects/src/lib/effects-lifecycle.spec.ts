@@ -8,6 +8,7 @@ import {
 import { TestBed } from '@angular/core/testing';
 import { Component, DestroyRef, ErrorHandler, Injector } from '@angular/core';
 import {
+  config,
   interval,
   Observable,
   of,
@@ -187,6 +188,27 @@ describe(`${rxEffect.name} lifecycle`, () => {
 
       expect(errorHandler.handleError).toHaveBeenCalledWith(error);
       expect(siblingSpy).toHaveBeenCalledWith(1);
+    });
+
+    it('should rethrow source errors as unhandled when no ErrorHandler is available (destroyRef-only)', () => {
+      jest.useFakeTimers();
+      const unhandled = jest.fn();
+      const previous = config.onUnhandledError;
+      config.onUnhandledError = unhandled;
+
+      try {
+        const destroyRef = new FakeDestroyRef();
+        const effects = rxEffect(undefined, { destroyRef });
+        effects.run(throwError(() => new Error('source boom')), jest.fn());
+        jest.runAllTimers();
+
+        expect(unhandled).toHaveBeenCalledWith(
+          expect.objectContaining({ message: 'source boom' })
+        );
+      } finally {
+        config.onUnhandledError = previous;
+        jest.useRealTimers();
+      }
     });
   });
 

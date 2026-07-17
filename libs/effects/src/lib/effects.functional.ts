@@ -265,8 +265,14 @@ function createEffects(
               // execute operation/ side effect
               sideEffectFn ? tap(sideEffectFn) : pipe(),
               catchError((error) => {
-                errorHandler?.handleError(error);
-                return EMPTY;
+                if (errorHandler) {
+                  errorHandler.handleError(error);
+                  return EMPTY;
+                }
+                // no ErrorHandler available (destroyRef-only usage):
+                // rethrow so rxjs reports an unhandled error instead of
+                // swallowing it silently (same policy as invokeGuarded)
+                throw error;
               })
             )
             .subscribe();
