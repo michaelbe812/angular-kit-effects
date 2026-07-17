@@ -1,4 +1,4 @@
-# angular-kit/effects
+# @angular-kit/effects
 
 Tooling to handle your effects (subscriptions)!
 
@@ -21,7 +21,7 @@ const intervalEffect = rxEffect().run(interval(1000), console.log)
 // or
 const effects = rxEffect();
 
-logEffect = this.effects.run(...)
+const logEffect = effects.run(...)
 ```
 
 Or create a group of effects:
@@ -35,7 +35,9 @@ const effects = rxEffect(({run}) => {
 
 ```
 *Note* that you need to use `rxEffect` within an injection context. If you want to
-use it outside an injection context you can pass the `Ìnjector` as argument.
+use it outside an injection context you can pass the `Injector` via `options.injector`,
+or pass `options.destroyRef`. With `destroyRef` alone, errors are reported to `ErrorHandler`
+only if `injector` is also provided.
 
 ### Run Code on Clean up
 
@@ -43,7 +45,7 @@ use it outside an injection context you can pass the `Ìnjector` as argument.
 
 When a `rxEffect`-instance is destroyed you can execute code which is registered in the `runOnInstanceDestroy`-hook.
 
-`runOnInstanceDestroy` is executed whenever the repsective `DestroyRef.onDestroy`-callback is executed.
+`runOnInstanceDestroy` is executed whenever the respective `DestroyRef.onDestroy`-callback is executed.
 
 Example for standalone function
 ```ts
@@ -73,7 +75,7 @@ When creating an effect:
 
 ```
 You can optionally specify a callback which is executed **one time** if **either** cleanUp() is called on this single
-effect or the `DestroyRef.onDestroy()`-callback iun the current scope executed. Whatever comes first will be executed.
+effect or the `DestroyRef.onDestroy()`-callback in the current scope executed. Whatever comes first will be executed.
 
 You do this by:
 ```ts
@@ -96,6 +98,17 @@ When creating an effect:
 ```
 You get a `EffectCleanUpRef` which exposes a `cleanUp`-function. You can call this function and 
 destroy this single effect.
+
+## Error handling
+
+Errors from a source observable are caught, forwarded to Angular's `ErrorHandler` (when available),
+and the effect terminates — it does not resubscribe. Errors thrown by `onCleanUp` callbacks are also
+routed to `ErrorHandler`.
+
+## Behavior after destroy
+
+After the `rxEffect` instance is destroyed/cleaned up, `run()` is a no-op — a passed `Subscription`
+is unsubscribed immediately — and `runOnInstanceDestroy()` executes its callback immediately.
 
 ## Demo
 

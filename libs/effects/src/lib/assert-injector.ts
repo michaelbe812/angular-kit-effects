@@ -27,6 +27,7 @@ import {
  * ```
  */
 export function assertInjector<Runner extends () => any>(
+  // eslint-disable-next-line @typescript-eslint/ban-types -- mirrors Angular assertInInjectionContext signature
   fn: Function,
   injector: Injector | undefined | null,
   runner: Runner,
@@ -52,10 +53,12 @@ export function assertInjector<Runner extends () => any>(
  * ```
  */
 export function assertInjector(
+  // eslint-disable-next-line @typescript-eslint/ban-types -- mirrors Angular assertInInjectionContext signature
   fn: Function,
   injector: Injector | undefined | null,
 ): Injector;
 export function assertInjector(
+  // eslint-disable-next-line @typescript-eslint/ban-types -- mirrors Angular assertInInjectionContext signature
   fn: Function,
   injector: Injector | undefined | null,
   runner?: () => any,
