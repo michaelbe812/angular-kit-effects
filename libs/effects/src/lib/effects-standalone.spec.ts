@@ -1,6 +1,6 @@
 import { rxEffect } from './effects.functional';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { interval, of, Subject, tap } from 'rxjs';
 
 describe(`${rxEffect.name} standalone`, () => {
@@ -119,23 +119,17 @@ describe(`${rxEffect.name} standalone`, () => {
       const cleanUpSpy2 = jest.fn();
       const cleanUpSpy3 = jest.fn();
 
-      const effect = effects.run(
-        trigger$$.subscribe((v) => service.triggerEffect(v)),
-        {
-          onCleanUp: cleanUpSpy,
-        }
-      );
+      effects.run(trigger$$.subscribe((v) => service.triggerEffect(v)), {
+        onCleanUp: cleanUpSpy,
+      });
 
-      const effect2 = effects.run(trigger$$, (v) => service.triggerEffect(v), {
+      effects.run(trigger$$, (v) => service.triggerEffect(v), {
         onCleanUp: cleanUpSpy2,
       });
 
-      const effect3 = effects.run(
-        trigger$$.pipe(tap((v) => service.triggerEffect(v))),
-        {
-          onCleanUp: cleanUpSpy3,
-        }
-      );
+      effects.run(trigger$$.pipe(tap((v) => service.triggerEffect(v))), {
+        onCleanUp: cleanUpSpy3,
+      });
 
       trigger$$.next(10);
       fixture.destroy();
@@ -147,7 +141,7 @@ describe(`${rxEffect.name} standalone`, () => {
       expect(cleanUpSpy3).toBeCalledTimes(1);
     }));
     it('should NOT execute the cleanUp function again when the effects-instance is destroyed but the cleanUp has been executed beforehand', async () => {
-      const { service, component, fixture, effects } =
+      const { service, fixture, effects } =
         await setupSingleEffectsInstance();
 
       const trigger$$ = new Subject<number>();
@@ -219,16 +213,16 @@ class Service {
   triggerEffect(v: number) {
     return v;
   }
-  teardownEffect() {}
+  teardownEffect(): void {
+    return;
+  }
 }
 
 @Component({
   template: '',
 })
-class TestSingleEffectsInstanceComponent implements OnDestroy {
+class TestSingleEffectsInstanceComponent {
   service = inject(Service);
 
   effects = rxEffect();
-
-  ngOnDestroy() {}
 }

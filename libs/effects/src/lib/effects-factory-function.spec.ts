@@ -103,7 +103,9 @@ class Service {
   triggerEffect(v: number) {
     return v;
   }
-  teardownEffect() {}
+  teardownEffect(): void {
+    return;
+  }
 }
 
 @Component({

@@ -5,8 +5,8 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@angular/common": ">=16.0.0",
-    "@angular/core": ">=16.0.0"
+    "@angular/core": ">=16.0.0 <23.0.0",
+    "rxjs": "^7.4.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
@@ -23,9 +23,9 @@
     "subscription management"
   ],
   "author": "Michael Berger",
-  "homepage": "https://github.com/mikelgo/angular-kit-effects",
+  "homepage": "https://github.com/michaelbe812/angular-kit-effects",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mikelgo/angular-kit-effects"
+    "url": "https://github.com/michaelbe812/angular-kit-effects"
   }
 }
