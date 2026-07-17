@@ -8,6 +8,11 @@ Tooling to handle your effects (subscriptions)!
   npm install @angular-kit/effects
   ```
 
+## Compatibility
+
+- Angular `>=16 <23`
+- rxjs `^7.4.0`
+
 
 ## `rxEffect`
 
@@ -22,6 +27,14 @@ const intervalEffect = rxEffect().run(interval(1000), console.log)
 const effects = rxEffect();
 
 const logEffect = effects.run(...)
+```
+
+`run` accepts three forms:
+
+```ts
+run(source$, sideEffectFn, options?)        // subscribe + execute side effect
+run(source$.pipe(tap(sideEffectFn)))        // observable with side effect inside
+run(source$.subscribe(sideEffectFn))        // existing subscription
 ```
 
 Or create a group of effects:
@@ -45,7 +58,8 @@ only if `injector` is also provided.
 
 When a `rxEffect`-instance is destroyed you can execute code which is registered in the `runOnInstanceDestroy`-hook.
 
-`runOnInstanceDestroy` is executed whenever the respective `DestroyRef.onDestroy`-callback is executed.
+`runOnInstanceDestroy` is executed whenever the respective `DestroyRef.onDestroy`-callback is executed
+or when `cleanUp()` is called manually on the instance — whatever comes first.
 
 Example for standalone function
 ```ts
@@ -75,7 +89,7 @@ When creating an effect:
 
 ```
 You can optionally specify a callback which is executed **one time** if **either** cleanUp() is called on this single
-effect or the `DestroyRef.onDestroy()`-callback in the current scope executed. Whatever comes first will be executed.
+effect or the instance is destroyed (`DestroyRef.onDestroy()` or manual instance `cleanUp()`). Whatever comes first will be executed.
 
 You do this by:
 ```ts
@@ -99,6 +113,10 @@ When creating an effect:
 You get a `EffectCleanUpRef` which exposes a `cleanUp`-function. You can call this function and 
 destroy this single effect.
 
+## Exported types
+
+`EffectCleanUpRef`, `RunOptions`, `RxEffect`, `EffectsSetupFn` are exported alongside `rxEffect`.
+
 ## Error handling
 
 Errors from a source observable are caught, forwarded to Angular's `ErrorHandler` (when available),
@@ -112,4 +130,4 @@ is unsubscribed immediately — and `runOnInstanceDestroy()` executes its callba
 
 ## Demo
 
-See this [stackblitz](https://stackblitz.com/edit/stackblitz-starters-baeufy?file=src%2Fapp%2Fchild%2Fchild.component.ts)
+See `apps/demo` in the repo or this [stackblitz](https://stackblitz.com/edit/stackblitz-starters-baeufy?file=src%2Fapp%2Fchild%2Fchild.component.ts)

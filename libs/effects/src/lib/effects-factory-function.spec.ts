@@ -32,7 +32,7 @@ describe(`${rxEffect.name} factory function`, () => {
   });
 
   describe('cleanUp', () => {
-    it('should execute runOnCleanUp function when terminate is called', async () => {
+    it('should execute runOnInstanceDestroy function when cleanUp is called', async () => {
       const { component } = await setup();
       jest.spyOn(component.clearInterval$$, 'next');
       component.effects.cleanUp();
@@ -49,7 +49,7 @@ describe(`${rxEffect.name} factory function`, () => {
     });
   });
 
-  describe('runOnCleanUp', () => {
+  describe('runOnInstanceDestroy', () => {
     it('should execute effect onDestroy', async () => {
       const { service, fixture } = await setup();
       fixture.destroy();
