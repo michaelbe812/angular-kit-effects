@@ -190,23 +190,51 @@ describe(`${rxEffect.name} lifecycle`, () => {
       expect(siblingSpy).toHaveBeenCalledWith(1);
     });
 
-    it('should rethrow source errors as unhandled when no ErrorHandler is available (destroyRef-only)', () => {
-      jest.useFakeTimers();
-      const unhandled = jest.fn();
-      const previous = config.onUnhandledError;
-      config.onUnhandledError = unhandled;
+    it('should log source errors when no ErrorHandler is available (destroyRef-only)', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => void 0);
 
       try {
         const destroyRef = new FakeDestroyRef();
         const effects = rxEffect(undefined, { destroyRef });
         effects.run(throwError(() => new Error('source boom')), jest.fn());
-        jest.runAllTimers();
 
-        expect(unhandled).toHaveBeenCalledWith(
+        expect(consoleSpy).toHaveBeenCalledWith(
+          '[rxEffect] Unhandled source error:',
           expect.objectContaining({ message: 'source boom' })
         );
       } finally {
+        consoleSpy.mockRestore();
+      }
+    });
+
+    it('should not report an unhandled rxjs error when no ErrorHandler is available', () => {
+      // a rethrow inside catchError would surface here and crash the host app
+      jest.useFakeTimers();
+      const unhandled = jest.fn();
+      const previous = config.onUnhandledError;
+      config.onUnhandledError = unhandled;
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => void 0);
+
+      try {
+        const destroyRef = new FakeDestroyRef();
+        const effects = rxEffect(undefined, { destroyRef });
+        const sibling$$ = new Subject<number>();
+        const siblingSpy = jest.fn();
+
+        effects.run(sibling$$, siblingSpy);
+        effects.run(throwError(() => new Error('source boom')), jest.fn());
+        jest.runAllTimers();
+        sibling$$.next(1);
+
+        expect(unhandled).not.toHaveBeenCalled();
+        expect(siblingSpy).toHaveBeenCalledWith(1);
+      } finally {
         config.onUnhandledError = previous;
+        consoleSpy.mockRestore();
         jest.useRealTimers();
       }
     });
