@@ -267,12 +267,14 @@ function createEffects(
               catchError((error) => {
                 if (errorHandler) {
                   errorHandler.handleError(error);
-                  return EMPTY;
+                } else {
+                  // no ErrorHandler available (destroyRef-only usage).
+                  // Rethrowing here would surface via rxjs' unhandled error
+                  // reporting, which crashes the host app; log instead so the
+                  // failure stays visible without taking the app down.
+                  console.error('[rxEffect] Unhandled source error:', error);
                 }
-                // no ErrorHandler available (destroyRef-only usage):
-                // rethrow so rxjs reports an unhandled error instead of
-                // swallowing it silently (same policy as invokeGuarded)
-                throw error;
+                return EMPTY;
               })
             )
             .subscribe();

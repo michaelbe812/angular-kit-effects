@@ -122,7 +122,8 @@ destroy this single effect.
 Errors from a source observable are caught, forwarded to Angular's `ErrorHandler` (when available),
 and the effect terminates — it does not resubscribe. Errors thrown by `onCleanUp` callbacks are also
 routed to `ErrorHandler`. When no `ErrorHandler` is available (`destroyRef`-only usage without
-`injector`) errors are rethrown as unhandled errors instead of being swallowed.
+`injector`) source errors are logged via `console.error` instead of being swallowed. Other effects on
+the same instance keep running either way.
 
 ## Behavior after destroy
 
